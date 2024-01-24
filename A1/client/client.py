@@ -18,6 +18,10 @@ def rm(n = 1, hostnames = ["s1"]):
     r = requests.delete('http://localhost:5000/rm', json={"n": n, "hostnames": hostnames})
     print(r.json())
 
+async def request(session, url):
+    # Example of an async GET request
+    async with session.get(url) as response:
+        return await response.json()
 
 async def main():
     url = 'http://localhost:5000/home'
