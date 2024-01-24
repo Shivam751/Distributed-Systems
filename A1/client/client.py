@@ -22,6 +22,12 @@ async def request(session, url):
     # Example of an async GET request
     async with session.get(url) as response:
         return await response.json()
+    
+
+async def main():
+    url = 'http://localhost:5000/home'
+    responses = None
+    dic = {}
 
     async with aiohttp.ClientSession() as session:
         tasks = []
@@ -38,13 +44,10 @@ async def request(session, url):
             dic[serv_id] += 1
         else:
             dic[serv_id] = 1
-    print(dic)
     
+    print(dic)
 
-async def main():
-    url = 'http://localhost:5000/home'
-    responses = None
-    dic = {}
+    
 
 if __name__ == '__main__':
     asyncio.run(main())
