@@ -1,0 +1,29 @@
+version: '3.9'
+
+networks:
+    n1:
+        name: n1
+
+services:    
+    serv:        
+        build: ./server
+        image: serv
+        networks:
+            n1: {}
+    
+    lb:
+        build: ./lb
+        image: lb
+        container_name: lb
+        environment:
+            - NUM_SERV=3
+            - NUM_VIRT_SERV=9
+            - SLOTS=512
+            - HOSTNAME=lb
+        ports:
+            - "5000:5000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        privileged: true
+        networks:
+            n1: {}
