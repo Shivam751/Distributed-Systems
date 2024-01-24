@@ -50,20 +50,6 @@ async def periodic_server_monitor(interval = 1):
         
         await asyncio.sleep(interval)
 
-
-@app.route('/rep', methods=['GET'])
-def rep():
-    containers = server_hostname_to_id.keys()
-
-    message = {
-        'N': len(containers)-1,
-        'replicas': list(containers)
-    }
-
-    response = jsonify(message = message, status = 'successful')
-    response.status_code = 200
-    return response
-
 @app.route('/add', methods=['POST'])
 def add(payload = None):
     num_new_servers = payload['n']
@@ -110,6 +96,19 @@ def add(payload = None):
     print("added containers")
 
     return rep
+
+@app.route('/rep', methods=['GET'])
+def rep():
+    containers = server_hostname_to_id.keys()
+
+    message = {
+        'N': len(containers)-1,
+        'replicas': list(containers)
+    }
+
+    response = jsonify(message = message, status = 'successful')
+    response.status_code = 200
+    return response
 
 @app.route('/rm', methods=['DELETE'])
 def remove(payload = None):
