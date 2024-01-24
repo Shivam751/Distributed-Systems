@@ -63,3 +63,50 @@ def rep():
     response = jsonify(message = message, status = 'successful')
     response.status_code = 200
     return response
+
+@app.route('/add', methods=['POST'])
+def add(payload = None):
+    num_new_servers = payload['n']
+    new_servers = payload['hostnames']
+
+    if num_new_servers is None or new_servers is None:
+        response = jsonify(message = '<Error> Invalid payload', status = 'failure')
+        response.status_code = 400
+        return response
+
+    if num_new_servers < len(new_servers):
+        response = jsonify(message = '<Error> Length of hostname list does not match number of newly added instances', status = 'failure')
+        response.status_code = 400
+        return response
+    
+    # if there are more servers in new_servers than the number of server names specified, then generate random names for the rest
+    if num_new_servers > len(new_servers):
+        for i in range(num_new_servers - len(new_servers)):
+            server_id = random.randint(100000, 999999)
+            server_name = f'serv_{server_id}'
+            new_servers.append(server_name)
+            server_hostname_to_id[server_name] = server_id
+            server_id_to_hostname[server_id] = server_name
+
+    for server_name in new_servers:
+        server_id = server_hostname_to_id[server_name]
+        if server_id is None:
+            server_id = random.randint(100000, 999999)
+            
+        try:
+            res = client.containers.run(image=image, name=server_name, network=network, detach=True, environment={'SERV_ID': server_id})
+        except Exception as e:
+            print(e)
+            response = jsonify(message = '<Error> Failed to spawn new docker container', 
+                            status = 'failure')
+            response.status_code = 400
+            return response
+
+        # add the new servers to the consistent hash map
+        ch.add_server(server_id)
+        server_id_to_hostname[server_id] = server_name
+        server_hostname_to_id[server_name] = server_id
+
+    print("added containers")
+
+    return rep
