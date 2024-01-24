@@ -166,3 +166,32 @@ def remove(payload = None):
             return response
 
     return rep
+
+@app.route('/<path:path>', methods=['GET'])
+async def get(path='home'):
+    if not (path == 'home' or path == 'heartbeat'):
+        response = jsonify(message = '<Error> Invalid path', status = 'failure')
+        response.status_code = 404
+        return response
+    
+    if len(server_id_to_hostname) == 0:
+        response = jsonify(message = '<Error> No servers created', status = 'failure')
+        response.status_code = 400
+        return response
+
+    request_id = random.randint(100000, 999999)    
+    server_id = ch.get_server(request_id=request_id)
+    server = server_id_to_hostname[server_id]
+
+    # send the request to the server instance
+    url = f'http://{server}:5000/{path}'
+    try:
+        async with aiohttp.ClientSession() as client_session:
+            async with client_session.get(url) as response:
+                content = await response.read()
+                return Response(content, status=response.status, headers = dict(response.headers))
+
+    except Exception as e:
+        response = jsonify(message = f"{str(e)} Error in handling request", status = "failure")
+        response.status_code = 400
+        return response
