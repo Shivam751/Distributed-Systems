@@ -23,6 +23,24 @@ async def request(session, url):
     async with session.get(url) as response:
         return await response.json()
 
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for _ in range(1000):
+            # generate a random url from urls list
+            tasks.append(request(session, url))
+        responses = await asyncio.gather(*tasks)
+        print(responses)
+    for response in responses:
+        message = response['message']
+        serv_id = extract_serv_id(message)
+        print(f"Server ID: {serv_id}")
+        if serv_id in dic:
+            dic[serv_id] += 1
+        else:
+            dic[serv_id] = 1
+    print(dic)
+    
+
 async def main():
     url = 'http://localhost:5000/home'
     responses = None
