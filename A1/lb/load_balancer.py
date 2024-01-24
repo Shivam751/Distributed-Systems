@@ -49,3 +49,17 @@ async def periodic_server_monitor(interval = 1):
             ch.add_server(server_id)
         
         await asyncio.sleep(interval)
+
+
+@app.route('/rep', methods=['GET'])
+def rep():
+    containers = server_hostname_to_id.keys()
+
+    message = {
+        'N': len(containers)-1,
+        'replicas': list(containers)
+    }
+
+    response = jsonify(message = message, status = 'successful')
+    response.status_code = 200
+    return response
