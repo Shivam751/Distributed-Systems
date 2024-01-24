@@ -195,3 +195,22 @@ async def get(path='home'):
         response = jsonify(message = f"{str(e)} Error in handling request", status = "failure")
         response.status_code = 400
         return response
+    
+@app.before_serving
+async def startup():
+    loop = asyncio.get_event_loop()
+    loop.create_task(periodic_server_monitor())
+
+if __name__ == '__main__':
+    ch = ConsistentHashMap(int(os.environ['NUM_SERV']), 
+                           int(os.environ['NUM_VIRT_SERV']), 
+                           int(os.environ['SLOTS']))
+
+    for i in range(int(os.environ['NUM_SERV'])):
+        server_id = random.randint(100000, 999999)
+        server_name = f'serv_{server_id}'
+        server_id_to_hostname[server_id] = server_name
+        server_hostname_to_id[server_name] = server_id
+        ch.add_server(server_id)
+
+    app.run(host='0.0.0.0', port=5000)
