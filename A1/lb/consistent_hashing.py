@@ -79,7 +79,6 @@ class ConsistentHashMap:
         
         return -1
 
-
     def add_server(self, server_id: int) -> None:
         """
         This function is used to add a new server instance to the consistent hash map.
@@ -128,3 +127,4 @@ class ConsistentHashMap:
             idx = 0
         
         return self.ring[self.sorted_keys[idx]]
+    
