@@ -47,7 +47,16 @@ async def main():
     
     print(dic)
 
-    
+    plt.bar(dic.keys(), dic.values(), color='g')
+    # save it to a file
+    # label axis
+    plt.xlabel('Server ID')
+    plt.ylabel('Number of requests')
+
+    plt.savefig("stats.png")
+
+    plt.show()
+
 
 if __name__ == '__main__':
     asyncio.run(main())
