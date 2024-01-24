@@ -31,7 +31,7 @@ async def main():
 
     async with aiohttp.ClientSession() as session:
         tasks = []
-        for _ in range(1000):
+        for _ in range(10000):
             # generate a random url from urls list
             tasks.append(request(session, url))
         responses = await asyncio.gather(*tasks)

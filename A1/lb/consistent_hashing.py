@@ -49,6 +49,7 @@ class ConsistentHashMap:
         """
         i, j = int(i), int(j)
         hash_val = int(i**2 + j**2 + 2*j + 25)
+        # hash_val = int(i**3 + 2*i + 15*j + 17)
         return hash_val
     
 
@@ -60,6 +61,7 @@ class ConsistentHashMap:
         """
         i = int(i)
         hash_val =  int(i**2 + 2*i + 17)
+        # hash_val = int(5*i + 21)
         return hash_val
 
  
