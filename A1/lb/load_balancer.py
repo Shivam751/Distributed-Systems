@@ -43,9 +43,14 @@ async def periodic_server_monitor(interval = 1):
             server_id = server_hostname_to_id[server_name]
 
             try:
-                res = client.containers.run(image=image, name=server_name, network=network, detach=True, environment={'SERV_ID': server_id})
-            except Exception as e:
-                print(e)
+                container = client.containers.get(server_name)
+                if container.status == 'exited':
+                    container.restart()
+                    print(f"revived server with ID: {server_id}!")
+            except docker.errors.NotFound:
+                print(f"Container {server_name} does not exist. Creating and starting...")
+                client.containers.run(image, detach=True, name=server_name, network=network, environment={'SERV_ID': server_id})
+                print(f"Created server with Server ID: {server_id}!")
 
             ch.add_server(server_id)
         
