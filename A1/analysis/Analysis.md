@@ -45,7 +45,7 @@ Results for various values of N:
 
 Screen capture of the working:
 
-<video src='A-3.mp4'/>
+[![Watch the video](https://img.youtube.com/vi/Fy7rTV35gZc/maxresdefault.jpg)](https://youtu.be/Fy7rTV35gZc)
 
 ## A-4
 
@@ -64,7 +64,7 @@ Results for various values of N:
 
 #### Final Plot of Avg. Load and Std. Dev.
 
-<img src="A-4_plot.png" alt="drawing" width="400"/>
+[<img src="A-4_plot.png" alt="drawing" width="400"/>]
 
 ### Observation
 1. We can see that the average load follows the function (10000/N).
