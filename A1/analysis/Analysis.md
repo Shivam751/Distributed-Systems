@@ -8,6 +8,9 @@ Results of 10000 async requests on N = 3 servers:
 
 In the various tests we ran on the system, we found that more requests seemed to be skewed to one of the servers for the given hash-functions. However occasionally the load was balanced somewhat due to the consistent hashing data structure.
 
+### Observation - 
+We observe that the requests per server are not uniform across the servers, as the consistent hashing data structure is not able to balance the load across the servers, this is mainly due its inability to produce completely random numbers, since it is not a pseudo random number generator.
+
 ## A-2
 
 <!-- {'989403': 2554, '500494': 7446}
@@ -22,14 +25,18 @@ In the various tests we ran on the system, we found that more requests seemed to
 ![5 servers](A-2_5.png)
 ![6 servers](A-2_6.png)
 
-For the hash-functions:
-phi(i, j) = i^2 + j^2 + 2*j + 25
-H(i) = i*2 + 2*i + 17
+### Observation - 
+1. We can see that the average load follows the function (10000/N)
+2. However, in such case standard deviation tells a lot about the distribution. In this case for we get the minimum value which tells that for , the distribution is almost uniform.
+3. From the line chart we can infer that on increasing the number of servers the uniformity of the distribution improves.
 
-On increasing the number of servers, the load balancing seemed to improve and a portion of the servers seemed to handle more of the load.
 
+### hash-functions:
+    phi(i, j) = i^2 + j^2 + 2*j + 25
+    
+    H(i) = i*2 + 2*i + 17
 ## A-3
-
+Added screenshots for the same.
 
 
 ## A-4
@@ -46,8 +53,9 @@ On increasing the number of servers, the load balancing seemed to improve and a 
 ![5 servers](A-4_5.png)
 ![6 servers](A-4_6.png)
 
-For the hash-functions:
-phi(i, j) = i^3 + 2*i + 15*j + 17
-H(i) = 5*i + 21
+### hash-functions:
+    phi(i, j) = i^3 + 2*i + 15*j + 17
+    
+    H(i) = 5*i + 21
 
 On increasing the number of servers, the load balancing improves and a portion of the servers seemed to handle more of the load.
