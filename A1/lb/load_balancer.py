@@ -82,8 +82,9 @@ async def add(payload = None):
             server_id_to_hostname[server_id] = server_name
 
     for server_name in new_servers:
-        server_id = server_hostname_to_id[server_name]
-        if server_id is None:
+        if server_name in server_hostname_to_id.keys():
+            server_id = server_hostname_to_id[server_name]
+        else:
             server_id = random.randint(100000, 999999)
             
         try:
