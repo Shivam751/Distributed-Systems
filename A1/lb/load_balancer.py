@@ -1,5 +1,5 @@
 from consistent_hashing import ConsistentHashMap
-from quart import Quart, jsonify, Response
+from quart import Quart, jsonify, Response, request
 import asyncio
 import aiohttp
 import docker
@@ -57,7 +57,8 @@ async def periodic_server_monitor(interval = 1):
         await asyncio.sleep(interval)
 
 @app.route('/add', methods=['POST'])
-def add(payload = None):
+async def add(payload = None):
+    payload = await request.get_json()
     num_new_servers = payload['n']
     new_servers = payload['hostnames']
 
@@ -101,14 +102,23 @@ def add(payload = None):
 
     print("added containers")
 
-    return rep
-
-@app.route('/rep', methods=['GET'])
-def rep():
     containers = server_hostname_to_id.keys()
 
     message = {
-        'N': len(containers)-1,
+        'N': len(containers),
+        'replicas': list(containers)
+    }
+
+    response = jsonify(message = message, status = 'successful')
+    response.status_code = 200
+    return response
+
+@app.route('/rep', methods=['GET'])
+async def rep():
+    containers = server_hostname_to_id.keys()
+
+    message = {
+        'N': len(containers),
         'replicas': list(containers)
     }
 
@@ -117,7 +127,8 @@ def rep():
     return response
 
 @app.route('/rm', methods=['DELETE'])
-def remove(payload = None):
+async def remove(payload = None):
+    payload = await request.get_json()
     num_rm_servers = payload['n']
     rm_servers = payload['hostnames']
 
@@ -170,7 +181,16 @@ def remove(payload = None):
             response.status_code = 400
             return response
 
-    return rep
+    containers = server_hostname_to_id.keys()
+
+    message = {
+        'N': len(containers),
+        'replicas': list(containers)
+    }
+
+    response = jsonify(message = message, status = 'successful')
+    response.status_code = 200
+    return response
 
 @app.route('/<path:path>', methods=['GET'])
 async def get(path='home'):
