@@ -253,7 +253,6 @@ async def add_servers():
     for result in results:
         if result[0]:
             spawned_servers.append(result[1])
-
     if len(spawned_servers) == 0:
         return jsonify({"message": "No servers spawned", "status": "failure"}), 500
     
