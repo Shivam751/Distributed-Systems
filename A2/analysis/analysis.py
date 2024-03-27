@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from payload_generator import PayloadGenerator
 
 
-base_url = "http://localhost:5000"\
+base_url = "http://localhost:5000"
 generator = None
 
 def plot_line_chart(x_values, y_values, x_label, y_label, title, path):

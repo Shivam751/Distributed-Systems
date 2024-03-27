@@ -49,11 +49,11 @@
 ## Task-3: Analysis
 
 ### A-1: 
-**The read and write speed for 1000 writes and 1000 reads in the default configuration  given in task 2**
-- Total read time: 0.7550139427185059  seconds
-- Total write time: 11.670790910720825  seconds
-- Average read time: 0.007550139427185059  seconds
-- Average write time: 0.11670790910720825  seconds
+**The read and write speed for 1000 writes and 1000 reads in the default configuration given in task 2**
+- Total read time: 2.593085765838623  seconds
+- Total write time: 37.91570973396301  seconds
+- Average read time: 0.002593085765838623  seconds
+- Average write time: 0.037915709733963014  seconds
 
     ![A-1-Read Time](./analysis/A1_read_time.png)
     
@@ -63,10 +63,10 @@
 
 ### A-2: 
 **The read and write speed for 1000 writes and 1000 reads when the number of shard replicas is increased (to 7) from the configuration (init endpoint)**
-- Total read time: 3.497199058532715  seconds
-- Total write time: 68.03262734413147  seconds
-- Average read time: 0.003497199058532715  seconds
-- Average write time: 0.06803262734413147  seconds
+- Total read time: 2.1461596488952637  seconds
+- Total write time: 68.46127414703369  seconds
+- Average read time: 0.003146159648895264  seconds
+- Average write time: 0.0684612741470337  seconds
 
     ![A-2-Read Time](./analysis/A2_read_time.png)
     
