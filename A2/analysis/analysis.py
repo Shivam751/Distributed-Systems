@@ -26,7 +26,7 @@ def launch_rw_requests():
     global generator
     num_rw = 1000
     shuffled_endpoints = ["/read"]*num_rw + ["/write"]*num_rw
-    random.shuffle(shuffled_endpoints)
+    # random.shuffle(shuffled_endpoints)
 
     read_time = []
     write_time = []

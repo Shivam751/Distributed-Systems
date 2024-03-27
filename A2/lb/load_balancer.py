@@ -304,7 +304,6 @@ async def remove_servers():
     remove_keys.extend(servers)
     return jsonify({"message": {"N": len(servers_to_shard), "servers": remove_keys}, "status": "success"}), 200
 
-# from here not completely done
 @app.route('/read', methods=['POST'])
 async def read():
     payload = await request.get_json()
