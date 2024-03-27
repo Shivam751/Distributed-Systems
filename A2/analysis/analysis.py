@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 from payload_generator import PayloadGenerator
 
 
-base_url = "http://localhost:5000"
+base_url = "http://localhost:5000"\
+generator = None
 
 def plot_line_chart(x_values, y_values, x_label, y_label, title, path):
     plt.close()
@@ -21,8 +22,8 @@ def plot_line_chart(x_values, y_values, x_label, y_label, title, path):
     print(f"Saved plot: {title} to {path}")
 
 
-def launch_rw_requests(low_idx, high_idx):
-    generator = PayloadGenerator(low_idx, high_idx)
+def launch_rw_requests():
+    global generator
     num_rw = 1000
     shuffled_endpoints = ["/read"]*num_rw + ["/write"]*num_rw
     random.shuffle(shuffled_endpoints)
@@ -49,7 +50,8 @@ def launch_rw_requests(low_idx, high_idx):
 
 
 def subtask_a1():
-
+    global generator
+    generator = PayloadGenerator(0, 12000)
     payload = {
         "N": 3,
         "schema": {
@@ -101,7 +103,7 @@ def subtask_a1():
         print("Init Init Error:", response.text)
         return
 
-    rtime, wtime = launch_rw_requests(0, 12000)
+    rtime, wtime = launch_rw_requests()
 
     print("A-1: Default Configuration")
     print("Total read time:", np.sum(rtime))
@@ -116,7 +118,8 @@ def subtask_a1():
 
 
 def subtask_a2():
-
+    global generator
+    generator = PayloadGenerator(0, 12000)
     payload = {
         "N": 9,
         "schema": {
@@ -195,7 +198,7 @@ def subtask_a2():
         print("Init Error:", response.text)
         return
 
-    rtime, wtime = launch_rw_requests(0, 12000)
+    rtime, wtime = launch_rw_requests()
 
     print("A-2: Default Configuration")
     print("Total read time:", np.sum(rtime))
@@ -210,7 +213,8 @@ def subtask_a2():
 
 
 def subtask_a3():
-
+    global generator
+    generator = PayloadGenerator(0, 24575)
     payload = {
         "N": 2,
         "schema": {
@@ -226,25 +230,29 @@ def subtask_a3():
             ]
         },
         "shards": [
-            {
-                "Stud_id_low": 0,
-                "Shard_id": "sh1",
-                "Shard_size": 4096
-            },
-            {
-                "Stud_id_low": 4096,
-                "Shard_id": "sh2",
-                "Shard_size": 4096
-            }
+            {"Stud_id_low": 0,"Shard_id": "sh1","Shard_size": 4096},
+            {"Stud_id_low": 4096,"Shard_id": "sh2","Shard_size": 4096},
+            {"Stud_id_low": 8192, "Shard_id": "sh3", "Shard_size": 4096},
+            {"Stud_id_low": 12288, "Shard_id": "sh4", "Shard_size": 4096},
+            {"Stud_id_low": 16384, "Shard_id": "sh5", "Shard_size": 4096},
+            {"Stud_id_low": 20480, "Shard_id": "sh6", "Shard_size": 4096}
         ],
         "servers": {
             "Server0": [
                 "sh1",
-                "sh2"
+                "sh2",
+                "sh3",
+                "sh4",
+                "sh5",
+                "sh6"
             ],
             "Server1": [
+                "sh1",
                 "sh2",
-                "sh1"
+                "sh3",
+                "sh4",
+                "sh5",
+                "sh6"
             ]
         }
     }
@@ -257,21 +265,14 @@ def subtask_a3():
     read_times = {}
 
     for n in range(2, 10):
-        if n == 2:
-            rtime, wtime = launch_rw_requests(0, 8000)
-        else:
-            rtime, wtime = launch_rw_requests(0, 25000)
+        rtime, wtime = launch_rw_requests()
         write_times[n] = {"total": np.sum(wtime), "mean": np.mean(
             wtime), "error": np.std(wtime)}
         read_times[n] = {"total": np.sum(rtime), "mean": np.mean(
             rtime), "error": np.std(rtime)}
-        if n == 2:
+        if n <= 5:
             payload = {
                 "n": 1,
-                "new_shards": [{"Stud_id_low": 8192, "Shard_id": "sh3", "Shard_size": 4096},
-                               {"Stud_id_low": 12288, "Shard_id": "sh4", "Shard_size": 4096},
-                                {"Stud_id_low": 16384, "Shard_id": "sh5", "Shard_size": 4096},
-                                {"Stud_id_low": 20480, "Shard_id": "sh6", "Shard_size": 4096}],
                 "servers": {
                     f"Server{n}": ["sh1", "sh2", "sh3", "sh4", "sh5", "sh6"]
                 }
@@ -280,14 +281,14 @@ def subtask_a3():
             payload = {
                 "n": 1,
                 "servers": {
-                    f"Server{n}": ["sh1", "sh2", "sh3", "sh4", "sh5", "sh6"]
+                    f"Server{n}": ["sh3", "sh4", "sh5", "sh6"]
                 }
             }
         else:
             payload = {
                 "n": 1,
                 "servers": {
-                    f"Server{n}": ["sh3", "sh4", "sh5", "sh6"]
+                    f"Server{n}": ["sh1", "sh2"]
                 }
             }
         response = requests.post(base_url + "/add", json=payload)
